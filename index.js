@@ -1,26 +1,46 @@
-const express = require("express");
-const app = express();
+import express from "express";
 
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+/**
+ * IMPORTANT
+ * Shopee requires JSON body parsing
+ */
 app.use(express.json());
 
-// Home page
+/**
+ * Root health check
+ * Shopee reviewers LOVE this
+ */
 app.get("/", (req, res) => {
-  res.send("✅ Bot is running");
+  res.status(200).send("✅ Bot is running");
 });
 
-// Redirect placeholder
+/**
+ * Shopee Authorization Redirect
+ * Shopee redirects here after authorizing shop
+ */
 app.get("/auth", (req, res) => {
-  res.send("Auth successful. You can close this page.");
+  console.log("Shopee auth query:", req.query);
+  res.status(200).send("Auth successful. You can close this page.");
 });
 
-// Shopee webhook (empty for now)
+/**
+ * Shopee Webhook (Push Mechanism)
+ * MUST respond within 3 seconds with 200
+ */
 app.post("/webhook/shopee", (req, res) => {
-  console.log("Shopee webhook received:", req.body);
-  res.sendStatus(200);
+  console.log("📦 Shopee webhook received:");
+  console.log(JSON.stringify(req.body, null, 2));
+
+  // Always respond FAST
+  res.status(200).json({ success: true });
 });
 
-// Render uses PORT env variable
-const PORT = process.env.PORT || 3000;
+/**
+ * Start server
+ */
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
