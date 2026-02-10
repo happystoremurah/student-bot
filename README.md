@@ -1,0 +1,1 @@
+Shopee automation bot
